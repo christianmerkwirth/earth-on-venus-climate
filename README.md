@@ -93,18 +93,28 @@ Solving this radiative-convective system iteratively yields the following parame
 
 | Parameter | Planck Mean (HITRAN) | Rosseland Mean (HITRAN) | Baseline Constant ($10^{-4}$) |
 | :--- | :--- | :--- | :--- |
-| **Surface Temperature ($T_s$)** | **$720.7\text{ K}$ ($447.5\text{ }^\circ\text{C}$)** | **$512.0\text{ K}$ ($238.8\text{ }^\circ\text{C}$)** | **$833.3\text{ K}$ ($560.1\text{ }^\circ\text{C}$)** |
-| **Total Optical Depth ($\tau_s$)** | $402.1$ | $62.4$ | $1206.8$ |
-| **Effective Emission Pressure ($P_e$)** | $1.757\text{ bar}$ | $6.394\text{ bar}$ | $1.172\text{ bar}$ |
-| **Effective Emission Height ($z_e$)** | $49.86\text{ km}$ | $27.79\text{ km}$ | $60.58\text{ km}$ |
-| **Effective Emission Temp ($T_e$)** | $242.0\text{ K}$ ($-31.1\text{ }^\circ\text{C}$) | $242.2\text{ K}$ ($-30.9\text{ }^\circ\text{C}$) | $242.5\text{ K}$ ($-30.6\text{ }^\circ\text{C}$) |
-| **Tropopause Pressure ($P_t$)** | $4.368\text{ bar}$ | $8.780\text{ bar}$ | $1.667\text{ bar}$ |
-| **Tropopause Height ($z_t$)** | $42.67\text{ km}$ | $25.45\text{ km}$ | $57.97\text{ km}$ |
-| **Tropopause Temperature ($T_t$)** | $302.9\text{ K}$ ($29.8\text{ }^\circ\text{C}$) | $262.9\text{ K}$ ($-10.2\text{ }^\circ\text{C}$) | $265.8\text{ K}$ ($-7.3\text{ }^\circ\text{C}$) |
+| **Surface Temperature ($T_s$)** | **$720.1\text{ K}$ ($447.0\text{ }^\circ\text{C}$)** | **$511.7\text{ K}$ ($238.5\text{ }^\circ\text{C}$)** | **$830.4\text{ K}$ ($557.3\text{ }^\circ\text{C}$)** |
+| **Total Optical Depth ($\tau_s$)** | $402.2$ | $62.4$ | $1210.4$ |
+| **Effective Emission Pressure ($P_e$)** | $1.802\text{ bar}$ | $6.439\text{ bar}$ | $1.172\text{ bar}$ |
+| **Effective Emission Height ($z_e$)** | $49.63\text{ km}$ | $27.72\text{ km}$ | $60.37\text{ km}$ |
+| **Effective Emission Temp ($T_e$)** | $242.8\text{ K}$ ($-30.4\text{ }^\circ\text{C}$) | $242.4\text{ K}$ ($-30.8\text{ }^\circ\text{C}$) | $241.5\text{ K}$ ($-31.7\text{ }^\circ\text{C}$) |
+| **Tropopause Pressure ($P_t$)** | $4.323\text{ bar}$ | $8.735\text{ bar}$ | $1.622\text{ bar}$ |
+| **Tropopause Height ($z_t$)** | $42.73\text{ km}$ | $25.47\text{ km}$ | $57.98\text{ km}$ |
+| **Tropopause Temperature ($T_t$)** | $301.8\text{ K}$ ($28.7\text{ }^\circ\text{C}$) | $262.3\text{ K}$ ($-10.9\text{ }^\circ\text{C}$) | $262.8\text{ K}$ ($-10.4\text{ }^\circ\text{C}$) |
+
+> The effective emission temperature $T_e$ recovers $T_{eq} \approx 242.25\text{ K}$ in every case. This is a built-in consistency check: in the grey Eddington model $T^4(\tau{=}2/3) = T_{eq}^4(\tfrac34\cdot\tfrac23 + \tfrac12) = T_{eq}^4$, so the emission level *must* sit at $T_{eq}$ regardless of the opacity used. It validates the optical-depth integration, not the surface temperature.
 
 ### Interpretation
-* **The Role of the Planck Mean:** The Planck mean gives an effective optical depth of $\tau_s \approx 402$. Under this model, the surface temperature reaches **$720.7\text{ K}$ ($447.5\text{ }^\circ\text{C}$)**, which is extremely close to the actual surface temperature of Venus ($\approx 740\text{ K}$). This shows that the dry-air atmosphere alone, under collision-induced absorption, can sustain Venus-like surface temperatures without needing runaway water vapor or massive carbon dioxide levels, provided the absorption windows are closed (which is physically expected due to pressure broadening and trace constituents like $\text{CO}_2$).
-* **The Role of the Rosseland Mean:** The Rosseland mean is a harmonic average and is dominated by the transparent windows of the spectrum. Under this model, the effective optical depth is much smaller ($\tau_s \approx 62.4$), pushing the emission level deeper into the atmosphere ($P_e \approx 6.4 \text{ bar}$ at $28 \text{ km}$) and leading to a lower surface temperature of **$512.0\text{ K}$ ($238.8\text{ }^\circ\text{C}$)**.
+
+The choice of mean opacity is not a free parameter — it determines which physical regime the model represents, and the two means bracket the answer for very different reasons.
+
+* **Rosseland Mean — the physically appropriate estimate for the deep atmosphere.** The Rosseland mean is the harmonic average that governs radiative *diffusion* through an optically thick medium, which is exactly the regime of the deep atmosphere here ($\tau_s \gg 1$). Because it is a harmonic average, it is dominated by the most transparent parts of the spectrum: thermal radiation preferentially leaks out through the spectral *windows*, so those windows set the true energy loss rate. This yields a smaller effective optical depth ($\tau_s \approx 62$), an emission level deep in the atmosphere ($P_e \approx 6.4\text{ bar}$, $\approx 28\text{ km}$), and a surface temperature of **$\approx 512\text{ K}$**. For a grey-diffusion idealization of this scenario, this is the estimate to trust.
+
+* **Planck Mean — an upper bound that over-states trapping.** The Planck mean is an arithmetic average weighted by the emitted spectrum; it is the correct mean only in the optically *thin* limit. Applied to a strongly non-grey, optically thick atmosphere it over-weights the strong absorption bands and ignores the fact that radiation escapes through the windows, inflating the effective optical depth to $\tau_s \approx 402$ and the surface temperature to **$\approx 720\text{ K}$**. The numerical closeness of this figure to Venus's observed $\approx 740\text{ K}$ is **coincidental** and should not be read as validation: real Venus is heated by a massive $\text{CO}_2$ atmosphere with $\text{SO}_2$/cloud opacity closing the windows, a mechanism absent from this dry $\text{N}_2$/$\text{O}_2$ model. Treat $720\text{ K}$ as a loose upper bound, not a prediction.
+
+* **Bottom line.** A 90-bar dry-air atmosphere at Venus's orbit produces a strong CIA greenhouse — surface temperatures of several hundred Kelvin above $T_{eq}$ — but the defensible range is roughly **$510\text{–}600\text{ K}$** (Rosseland to intermediate), not a clean Venus match. The headline result is that N₂/O₂ collision-induced absorption *alone* can lift the surface well above the boiling point of water, not that it reproduces Venus.
+
+> **Modeling caveats.** This is a grey, single-mean-opacity radiative-convective model: neither the Planck nor the Rosseland mean is exactly correct for a non-grey spectrum, and a true band-by-band (or correlated-$k$) calculation would fall between them. The infrared optical depth is integrated with a cumulative trapezoid rule from $P=0$; solar absorption within the atmosphere, scattering-greenhouse coupling, and lapse-rate feedbacks are not modeled.
 
 ---
 

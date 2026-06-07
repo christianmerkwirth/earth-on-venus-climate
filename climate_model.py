@@ -211,7 +211,15 @@ def solve_atmosphere(n2_n2_bands, o2_n2_bands, o2_o2_bands, mode="planck"):
         k_grid = np.array([get_k_mean(t) for t in T_profile])
         
         integrand = (k_grid * P_grid) / (g * (rho_STP**2) * R_d * T_profile)
-        tau_grid = np.cumsum(integrand) * dP
+        # Cumulative trapezoidal integration of optical depth. The integrand
+        # vanishes at P=0, so the contribution from 0 -> P_grid[0] is the
+        # triangle 0.5 * integrand[0] * P_grid[0]; subsequent intervals use the
+        # trapezoid rule. This is more accurate than a forward-rectangle sum and
+        # avoids ignoring the opacity above the first grid level.
+        seg = 0.5 * (integrand[1:] + integrand[:-1]) * dP
+        tau_grid = np.empty(N)
+        tau_grid[0] = 0.5 * integrand[0] * P_grid[0]
+        tau_grid[1:] = tau_grid[0] + np.cumsum(seg)
         
         # Radiative equilibrium profile
         T_rad = T_eq * (0.75 * tau_grid + 0.5)**0.25
