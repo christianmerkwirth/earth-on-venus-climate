@@ -118,6 +118,32 @@ The choice of mean opacity is not a free parameter — it determines which physi
 
 ---
 
+## 5. Spectral Coverage & Limitations
+
+The radiative transfer here is **not** frequency-resolved. The full infrared spectrum is collapsed into a *single* mean opacity per temperature (Planck or Rosseland) before the grey two-stream relation $T^4(\tau) = T_{eq}^4(\tfrac34\tau + \tfrac12)$ is applied. Frequencies enter only when that mean is computed over the grid `nu_grid = 1–3000 cm⁻¹`. Readers should be aware of exactly which absorption this captures — and what it leaves out.
+
+### What opacity is included
+**Only $\text{N}_2$/$\text{O}_2$ collision-induced absorption (CIA)** from the three HITRAN files. The bands that fall in the thermal range actually used by the model are:
+
+| Band | Range (cm⁻¹) | In model? |
+| :--- | :--- | :--- |
+| $\text{N}_2$–$\text{N}_2$ rototranslational | $0$–$450$ | ✓ |
+| $\text{O}_2$–$\text{O}_2$ / $\text{O}_2$–$\text{N}_2$ collision | $1150$–$1950$ | ✓ |
+| collision fundamental region | $1850$–$3000$ | ✓ |
+| **(no absorber)** | **$450$–$1150$** | **✗ — zero opacity** |
+| $\text{N}_2$–$\text{N}_2$ weak band | $4300$–$5000$ | ✗ (above the $3000\text{ cm}^{-1}$ grid cutoff) |
+| $\text{O}_2$ near-IR / visible (Chappuis, Wulf, …) | $7500$–$33000$ | ✗ (not thermal; solar absorption is represented only through the albedo $\alpha$) |
+
+### What is left out, and why it matters
+* **A fully transparent window at $450$–$1150\text{ cm}^{-1}$ sits directly on the thermal peak.** This region has *no* absorber in the model, yet it carries roughly **$60\%$ of the blackbody emission at $240$–$300\text{ K}$** and still $\sim 20\%$ at $720\text{ K}$. It is the dominant escape route for outgoing longwave radiation, which is precisely why the harmonic (Rosseland) mean — physically appropriate for the optically thick interior — yields a much lower optical depth and surface temperature than the Planck mean.
+* **$\text{CO}_2$-specific bands are entirely absent.** $\text{CO}_2$ enters the code only through the mean molecular weight $M$ and heat capacity $C_p$ (its $0.00036$ mole fraction); it contributes **zero opacity**. Its strong $15\,\mu\text{m}$ ($667\text{ cm}^{-1}$) bending band — which on real Earth and Venus partly closes exactly the window above — is not modeled. The same applies to $\text{H}_2\text{O}$ and $\text{O}_3$ bands. For this strictly dry $\text{N}_2$/$\text{O}_2$ composition that omission is *consistent* (there is no $\text{CO}_2$ band opacity to add at $360\text{ ppm}$ without line data), but it means the model cannot close the thermal window the way a real $\text{CO}_2$-rich atmosphere does.
+* **The $3000\text{ cm}^{-1}$ grid cutoff** drops the weak $\text{N}_2$–$\text{N}_2$ $4300$–$5000\text{ cm}^{-1}$ band and up to $\sim 14\%$ of the Planck weight at $720\text{ K}$. Because that excluded region is essentially window (negligible CIA), the effect on the opacity is small, though it slightly biases the Planck-mean normalization at the highest temperatures.
+* **The Rosseland mean is restricted to $\le 650\text{ cm}^{-1}$** (to avoid singularities in transparent windows), so it effectively samples *only* the far-IR $\text{N}_2$–$\text{N}_2$ rototranslational band — which holds $\sim 57\%$ of the emission at $242\text{ K}$ but only $\sim 7\%$ at $720\text{ K}$ — and ignores the $1150$–$3000\text{ cm}^{-1}$ collision bands.
+
+**In short:** the model faithfully includes the non-$\text{CO}_2$ (N₂/O₂ collision) infrared bands available in HITRAN below $3000\text{ cm}^{-1}$, but it is a grey-mean approximation with a wide-open transparent window at the thermal peak and no $\text{CO}_2$/$\text{H}_2\text{O}$/$\text{O}_3$ line opacity. A frequency-resolved (band-by-band or correlated-$k$) treatment that included those line bands would be required to close the window and is the natural next step.
+
+---
+
 ## Simulation Code
 
 The code used to run these calculations and generate the temperature profile plot is in [climate_model.py](file:///home/cmerk/repos/maps/earth_on_venus/climate_model.py).
