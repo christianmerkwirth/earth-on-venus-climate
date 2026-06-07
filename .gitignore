@@ -1,0 +1,6 @@
+cia_data/
+__pycache__/
+.venv/
+.idea/
+.vscode/
+*.pyc
