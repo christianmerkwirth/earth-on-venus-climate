@@ -357,10 +357,48 @@ def run_model():
     ax2.legend(fontsize=10)
     
     plt.tight_layout()
-    
+
     plot_path = os.path.join(os.path.dirname(__file__), "temperature_profile.png")
     plt.savefig(plot_path, dpi=300)
     print(f"\nTemperature profile plot saved to '{plot_path}'.")
+
+    # -------------------------------------------------------------
+    # PRESSURE vs HEIGHT DIAGRAM (hydrostatic structure)
+    # -------------------------------------------------------------
+    fig2, ax = plt.subplots(figsize=(8, 6))
+
+    cases = [
+        (res_planck,    'r-',  "Planck Mean (HITRAN)"),
+        (res_rosseland, 'b-',  "Rosseland Mean (HITRAN)"),
+        (res_const,     'k--', "Constant 1e-4 Baseline"),
+    ]
+    for res, style, label in cases:
+        ax.plot(res['z'] / 1000.0, res['P'] / 1e5, style, lw=2, label=label)
+
+    # Mark the tropopause and effective emission level of each case
+    for res, style, _ in cases:
+        color = style[0]
+        ax.scatter([res['z_t'] / 1000.0], [res['P_t'] / 1e5], color=color,
+                   marker='o', s=40, zorder=5)
+        ax.scatter([res['z_e'] / 1000.0], [res['P_e'] / 1e5], color=color,
+                   marker='^', s=45, zorder=5)
+    # Legend proxies for the markers
+    ax.scatter([], [], color='gray', marker='o', s=40, label="Tropopause")
+    ax.scatter([], [], color='gray', marker='^', s=45, label=r"Emission level ($\tau=2/3$)")
+
+    ax.set_yscale('log')
+    ax.invert_yaxis()
+    ax.set_xlabel("Altitude (km)", fontsize=12)
+    ax.set_ylabel("Pressure (bar)", fontsize=12)
+    ax.set_title("Atmospheric Pressure vs. Altitude (Hydrostatic Structure)", fontsize=14)
+    ax.grid(True, which="both", ls=":")
+    ax.legend(fontsize=10)
+
+    plt.tight_layout()
+
+    ph_path = os.path.join(os.path.dirname(__file__), "pressure_height_profile.png")
+    plt.savefig(ph_path, dpi=300)
+    print(f"Pressure vs height diagram saved to '{ph_path}'.")
 
 if __name__ == "__main__":
     run_model()

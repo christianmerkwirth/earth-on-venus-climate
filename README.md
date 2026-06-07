@@ -157,3 +157,8 @@ uv run python earth_on_venus/climate_model.py
 The model produces the following temperature profile as a function of pressure and altitude:
 
 ![Temperature Profile](./temperature_profile.png)
+
+### Pressure vs. Height Diagram
+The hydrostatic structure (pressure on a log scale vs. altitude) for the three opacity cases is shown below. Circles mark the tropopause and triangles mark the effective emission level ($\tau = 2/3$). The colder Rosseland profile has a smaller scale height (steeper $P$–$z$ curve), while the warmer baseline case is the most vertically extended:
+
+![Pressure vs Height](./pressure_height_profile.png)
